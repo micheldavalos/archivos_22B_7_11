@@ -1,0 +1,3 @@
+Nombre    Tipo     Fuerza Salud
+Davalos   Guerrero 100    99  
+Michel    Zombie   100    50  

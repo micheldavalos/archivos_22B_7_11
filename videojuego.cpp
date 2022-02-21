@@ -1,4 +1,6 @@
 #include "videojuego.hpp"
+#include <iomanip>
+#include <fstream>
 
 VideoJuego::VideoJuego()
 {
@@ -7,7 +9,7 @@ VideoJuego::VideoJuego()
 
 void VideoJuego::agregarFinal(const Personaje& p)
 {
-    if (cont == 5) {
+    if (cont == MAX) {
         cout << "El arreglo esta lleno" << endl;
         return;
     }
@@ -17,14 +19,101 @@ void VideoJuego::agregarFinal(const Personaje& p)
 }
 
 void VideoJuego::mostrar()
-{
+{   
+    cout << left;
+    cout << setw(10) << "Nombre" 
+         << setw(9) << "Tipo" 
+         << setw(7) << "Fuerza"
+         << setw(4) << "Salud"
+         << endl;
     for (size_t i = 0; i < cont; i++) {
         Personaje& p = personajes[i];
-        cout << "Personaje " << i << endl;
-        cout << "Nombre: " << p.getNombre() << endl;
-        cout << "Tipo: " << p.getTipo() << endl;
-        cout << "Fuerza: " << p.getFuerza() << endl;
-        cout << "Salud: " << p.getSalud() << endl;
+        cout << setw(10) << p.getNombre() 
+             << setw(9) << p.getTipo() 
+             << setw(7) << p.getFuerza()
+             << setw(4) << p.getSalud();
+             
+        // cout << "Personaje " << i << endl;
+        // cout << p;
+        // cout << "Nombre: " << p.getNombre() << endl;
+        // cout << "Tipo: " << p.getTipo() << endl;
+        // cout << "Fuerza: " << p.getFuerza() << endl;
+        // cout << "Salud: " << p.getSalud() << endl;
         cout << endl;
     }
+}
+
+void VideoJuego::respaldar_tabla()
+{   
+    ofstream archivo("personajes.txt");
+
+    if (archivo.fail()) {
+        return;
+    }
+
+    archivo << left;
+    archivo << setw(10) << "Nombre" 
+         << setw(9) << "Tipo" 
+         << setw(7) << "Fuerza"
+         << setw(4) << "Salud"
+         << endl;
+    for (size_t i = 0; i < cont; i++) {
+        Personaje& p = personajes[i];
+        archivo << setw(10) << p.getNombre() 
+             << setw(9) << p.getTipo() 
+             << setw(7) << p.getFuerza()
+             << setw(4) << p.getSalud();
+             
+        archivo << endl;
+    }
+    archivo.close();
+}
+
+void VideoJuego::respaldar_csv()
+{
+    ofstream archivo("personajes.csv");
+
+    if (archivo.fail()) {
+        return;
+    }
+
+    for (size_t i = 0; i < cont; i++) {
+        Personaje& p = personajes[i];
+
+        archivo << p.getNombre() << ",";
+        archivo << p.getTipo() << ",";
+        archivo << p.getFuerza() << ",";
+        archivo << p.getSalud() << endl;
+        // nombre,tipo,fuerza,salud\n
+    }
+
+    archivo.close();
+}
+
+void VideoJuego::recuperar_csv()
+{
+    ifstream archivo("personajes.csv");
+
+    if (archivo.fail()) {
+        cout << "No se pudo abrir el archivo" << endl;
+        return;
+    }
+
+    string nombre, tipo, fuerza, salud;
+    float f, s;
+
+    while (true) {
+        getline(archivo, nombre, ',');
+        if (archivo.fail()) break;
+        getline(archivo, tipo, ',');
+        getline(archivo, fuerza, ',');
+        getline(archivo, salud);
+
+        f = stof(fuerza);
+        s = stof(salud);
+
+        Personaje p(nombre, tipo, f, s);
+        agregarFinal(p);    
+    }
+
 }

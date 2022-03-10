@@ -91,6 +91,20 @@ public:
         return *this;
     }
 
+    bool operator==(const Personaje& p)
+    {
+        return nombre == p.nombre;
+    }
+
+    bool operator<(const Personaje& p)
+    {
+        return nombre < p.nombre;
+    }
+    bool operator>(const Personaje& p)
+    {
+        return nombre > p.nombre;
+    }
+
 };
 
 

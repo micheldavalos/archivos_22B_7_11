@@ -2,52 +2,55 @@
 #include <iomanip>
 #include <fstream>
 
-VideoJuego::VideoJuego(size_t tam):tam(tam)
+VideoJuego::VideoJuego(size_t tam):personajes(tam)
 {
-    cont = 0;
-    personajes = new Personaje[tam];
+
 }
 
-VideoJuego::VideoJuego(const VideoJuego& v)
+VideoJuego::VideoJuego(const VideoJuego& v):personajes(v.cap())
 {
-    personajes = new Personaje[v.tam];
-    for (size_t i = 0; i < v.cont; i++)
-    {
-        personajes[i] = v.personajes[i];
-    }
-    cont = v.cont;
-    tam = v.tam;    
+    personajes = v.personajes;
 }
 
 VideoJuego::~VideoJuego()
 {
-    delete[] personajes;
+    personajes.~Arreglo();
 }
 
 VideoJuego& VideoJuego::operator=(const VideoJuego& v)
 {
-    delete[] personajes;
-
-    personajes = new Personaje[v.tam];
-    for (size_t i = 0; i < v.cont; i++)
-    {
-        personajes[i] = v.personajes[i];
-    }
-    cont = v.cont;
-    tam = v.tam; 
-
+    personajes = v.personajes;
+ 
     return *this;
 }
 
 void VideoJuego::agregarFinal(const Personaje& p)
 {
-    if (cont == tam) {
+    if (personajes.full()) {
         cout << "El arreglo esta lleno" << endl;
         return;
     }
 
-    personajes[cont] = p;
-    cont++;
+    personajes.push_back(p);
+}
+void VideoJuego::agregarInicio(const Personaje& p)
+{
+    if (personajes.full()) {
+        cout << "El arreglo esta lleno" << endl;
+        return;
+    }
+
+    personajes.push_front(p);
+}
+
+void VideoJuego::insertar(const Personaje& p, size_t pos)
+{
+    if (personajes.full()) {
+        cout << "El arreglo esta lleno" << endl;
+        return;
+    }
+
+    personajes.insert(p, pos);
 }
 
 void VideoJuego::mostrar()
@@ -58,7 +61,7 @@ void VideoJuego::mostrar()
          << setw(7) << "Fuerza"
          << setw(4) << "Salud"
          << endl;
-    for (size_t i = 0; i < cont; i++) {
+    for (size_t i = 0; i < personajes.size(); i++) {
         Personaje& p = personajes[i];
         cout << setw(10) << p.getNombre() 
              << setw(9) << p.getTipo() 
@@ -89,7 +92,7 @@ void VideoJuego::respaldar_tabla()
          << setw(7) << "Fuerza"
          << setw(4) << "Salud"
          << endl;
-    for (size_t i = 0; i < cont; i++) {
+    for (size_t i = 0; i < personajes.size(); i++) {
         Personaje& p = personajes[i];
         archivo << setw(10) << p.getNombre() 
              << setw(9) << p.getTipo() 
@@ -109,7 +112,7 @@ void VideoJuego::respaldar_csv()
         return;
     }
 
-    for (size_t i = 0; i < cont; i++) {
+    for (size_t i = 0; i < personajes.size(); i++) {
         Personaje& p = personajes[i];
 
         archivo << p.getNombre() << ",";

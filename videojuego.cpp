@@ -2,14 +2,46 @@
 #include <iomanip>
 #include <fstream>
 
-VideoJuego::VideoJuego()
+VideoJuego::VideoJuego(size_t tam):tam(tam)
 {
     cont = 0;
+    personajes = new Personaje[tam];
+}
+
+VideoJuego::VideoJuego(const VideoJuego& v)
+{
+    personajes = new Personaje[v.tam];
+    for (size_t i = 0; i < v.cont; i++)
+    {
+        personajes[i] = v.personajes[i];
+    }
+    cont = v.cont;
+    tam = v.tam;    
+}
+
+VideoJuego::~VideoJuego()
+{
+    delete[] personajes;
+}
+
+VideoJuego& VideoJuego::operator=(const VideoJuego& v)
+{
+    delete[] personajes;
+
+    personajes = new Personaje[v.tam];
+    for (size_t i = 0; i < v.cont; i++)
+    {
+        personajes[i] = v.personajes[i];
+    }
+    cont = v.cont;
+    tam = v.tam; 
+
+    return *this;
 }
 
 void VideoJuego::agregarFinal(const Personaje& p)
 {
-    if (cont == MAX) {
+    if (cont == tam) {
         cout << "El arreglo esta lleno" << endl;
         return;
     }
